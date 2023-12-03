@@ -1,0 +1,114 @@
+#include <iostream>
+
+using namespace std;
+
+const int MAX_ORDERS = 5;  // Maximum number of orders
+
+class CircularQueue {
+private:
+    int front, rear, count;
+    int orders[MAX_ORDERS];
+
+public:
+    CircularQueue() {
+        front = rear = -1;
+        count = 0;
+    }
+
+    // Function to check if the queue is empty
+    bool isEmpty() {
+        return count == 0;
+    }
+
+    // Function to check if the queue is full
+    bool isFull() {
+        return count == MAX_ORDERS;
+    }
+
+    // Function to enqueue (place an order)
+    void enqueue(int order) {
+        if (!isFull()) {
+            if (isEmpty()) {
+                front = rear = 0;
+            } else {
+                rear = (rear + 1) % MAX_ORDERS;  // Circular increment
+            }
+            orders[rear] = order;
+            count++;
+            cout << "Order " << order << " placed successfully.\n";
+        } else {
+            cout << "Queue is full. Cannot place more orders.\n";
+        }
+    }
+
+    // Function to dequeue (serve an order)
+    void dequeue() {
+        if (!isEmpty()) {
+            int servedOrder = orders[front];
+            cout << "Order " << servedOrder << " served.\n";
+            front = (front + 1) % MAX_ORDERS;  // Circular increment
+            count--;
+        } else {
+            cout << "Queue is empty. No orders to serve.\n";
+        }
+    }
+
+    // Function to display the current orders in the queue
+    void displayOrders() {
+        if (!isEmpty()) {
+            cout << "Current orders in the queue: ";
+            int i = front;
+            do {
+                cout << orders[i] << " ";
+                i = (i + 1) % MAX_ORDERS;  // Circular increment
+            } while (i != (rear + 1) % MAX_ORDERS);
+            cout << endl;
+        } else {
+            cout << "Queue is empty. No orders to display.\n";
+        }
+    }
+};
+
+int main() {
+    CircularQueue pizzaQueue;
+    int choice, orderNumber;
+
+    do {
+        cout << "\n1. Place an order\n";
+        cout << "2. Serve an order\n";
+        cout << "3. Display current orders\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                if (!pizzaQueue.isFull()) {
+                    cout << "Enter order number: ";
+                    cin >> orderNumber;
+                    pizzaQueue.enqueue(orderNumber);
+                } else {
+                    cout << "Cannot place more orders. Queue is full.\n";
+                }
+                break;
+
+            case 2:
+                pizzaQueue.dequeue();
+                break;
+
+            case 3:
+                pizzaQueue.displayOrders();
+                break;
+
+            case 4:
+                cout << "Exiting the program.\n";
+                break;
+
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 4);
+
+    return 0;
+}
+
